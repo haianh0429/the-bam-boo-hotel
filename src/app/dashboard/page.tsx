@@ -1,3 +1,5 @@
+"use client";
+
 import {
   FinanceList,
   HeaderLinksInline,
@@ -5,17 +7,21 @@ import {
   PercentDonut,
   ReportsList,
   RingStat,
+  MobileNav,
   Sidebar,
   SpacesRing,
   SocialWidget,
   TopBar,
   WidgetCard,
 } from "@/components/DashboardWidgets";
+import { useState } from "react";
 
 export default function DashboardPage() {
+  const [navOpen, setNavOpen] = useState(false);
   return (
     <div className="min-h-screen bg-white">
-      <TopBar />
+      <TopBar onOpenNav={() => setNavOpen(true)} />
+      <MobileNav open={navOpen} onClose={() => setNavOpen(false)} />
       <div className="mx-auto flex w-full max-w-7xl">
         <Sidebar />
         <main className="flex-1">

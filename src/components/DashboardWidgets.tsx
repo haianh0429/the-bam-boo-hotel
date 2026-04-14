@@ -14,6 +14,7 @@ import {
   LifeBuoy,
   ListChecks,
   Mail,
+  Menu,
   NotebookText,
   PackageCheck,
   Receipt,
@@ -24,17 +25,23 @@ import {
   Sparkles,
   TrendingUp,
   Users2,
+  X,
 } from "lucide-react";
 import { ReactNode, useMemo } from "react";
 
-export function TopBar() {
+export function TopBar(props: { onOpenNav?: () => void }) {
   return (
     <div className="sticky top-0 z-30 bg-[#111111] text-white">
       <div className="mx-auto flex h-12 w-full max-w-7xl items-center gap-4 px-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-7 w-7 items-center justify-center rounded bg-white/10">
-            <span className="text-[10px] font-bold tracking-widest">BH</span>
-          </div>
+          <button
+            type="button"
+            onClick={props.onOpenNav}
+            className="flex h-7 w-7 items-center justify-center rounded bg-white/10 hover:bg-white/15"
+            aria-label="Mở menu"
+          >
+            <Menu className="h-4 w-4" strokeWidth={1.5} />
+          </button>
           <div className="hidden text-sm font-semibold tracking-tight sm:block">
             THE BAMBOO HOTEL
           </div>
@@ -87,15 +94,15 @@ function TopIcon(props: { icon: ReactNode }) {
   );
 }
 
-export function Sidebar() {
+function SidebarContent() {
   return (
-    <aside className="hidden w-[280px] shrink-0 bg-white lg:block">
+    <div>
       <div className="border-b border-[#F1F1F1] px-5 py-4">
         <div className="text-sm font-semibold tracking-tight text-zinc-900">
           The Bamboo Hotel
         </div>
         <div className="mt-1 text-xs text-zinc-500">Chọn dịch vụ</div>
-        <div className="mt-2 flex items-center justify-between border bg-white px-3 py-2 text-sm text-zinc-700">
+        <div className="mt-2 flex items-center justify-between border border-[#F1F1F1] bg-white px-3 py-2 text-sm text-zinc-700">
           <div>Lưu trú</div>
           <div className="text-xs text-zinc-400">▾</div>
         </div>
@@ -104,7 +111,9 @@ export function Sidebar() {
       <div className="px-5 py-4">
         <div className="text-xs font-medium text-zinc-500">Tác vụ</div>
         <div className="mt-3 grid gap-2">
-          <SideItem icon={<ClipboardList className="h-4 w-4" strokeWidth={1.5} />}>
+          <SideItem
+            icon={<ClipboardList className="h-4 w-4" strokeWidth={1.5} />}
+          >
             Bỏ lỡ <Badge>2</Badge>
           </SideItem>
         </div>
@@ -129,7 +138,9 @@ export function Sidebar() {
           <SideItem icon={<BarChart3 className="h-4 w-4" strokeWidth={1.5} />}>
             Báo cáo
           </SideItem>
-          <SideItem icon={<ShoppingCart className="h-4 w-4" strokeWidth={1.5} />}>
+          <SideItem
+            icon={<ShoppingCart className="h-4 w-4" strokeWidth={1.5} />}
+          >
             Đơn hàng
           </SideItem>
           <SideItem icon={<ShieldCheck className="h-4 w-4" strokeWidth={1.5} />}>
@@ -137,7 +148,43 @@ export function Sidebar() {
           </SideItem>
         </div>
       </div>
+    </div>
+  );
+}
+
+export function Sidebar() {
+  return (
+    <aside className="hidden w-[280px] shrink-0 bg-white lg:block">
+      <SidebarContent />
     </aside>
+  );
+}
+
+export function MobileNav(props: { open: boolean; onClose: () => void }) {
+  if (!props.open) return null;
+  return (
+    <div className="fixed inset-0 z-50 lg:hidden">
+      <button
+        type="button"
+        className="absolute inset-0 bg-black/30"
+        onClick={props.onClose}
+        aria-label="Đóng menu"
+      />
+      <div className="absolute left-0 top-0 h-full w-[320px] bg-white shadow-2xl">
+        <div className="flex items-center justify-between border-b border-[#F1F1F1] px-5 py-3">
+          <div className="text-sm font-semibold text-zinc-900">Menu</div>
+          <button
+            type="button"
+            onClick={props.onClose}
+            className="rounded-md border border-[#F1F1F1] bg-white p-2 text-zinc-700 hover:bg-zinc-50"
+            aria-label="Đóng"
+          >
+            <X className="h-4 w-4" strokeWidth={1.5} />
+          </button>
+        </div>
+        <SidebarContent />
+      </div>
+    </div>
   );
 }
 
