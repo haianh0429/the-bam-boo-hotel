@@ -110,12 +110,8 @@ function SidebarContent() {
 
       <div className="px-5 py-4">
         <div className="text-xs font-medium text-zinc-500">Tác vụ</div>
-        <div className="mt-3 grid gap-2">
-          <SideItem
-            icon={<ClipboardList className="h-4 w-4" strokeWidth={1.5} />}
-          >
-            Bỏ lỡ <Badge>2</Badge>
-          </SideItem>
+        <div className="mt-3 border border-[#F1F1F1] bg-white p-4">
+          <TasksDonut count={2} label="Bỏ lỡ" />
         </div>
 
         <div className="mt-6 text-xs font-medium text-zinc-500">Điều hướng</div>
@@ -146,6 +142,57 @@ function SidebarContent() {
           <SideItem icon={<ShieldCheck className="h-4 w-4" strokeWidth={1.5} />}>
             Kiểm tra phòng
           </SideItem>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TasksDonut(props: { count: number; label: string }) {
+  const size = 84;
+  const stroke = 7;
+  const r = (size - stroke) / 2;
+  const c = 2 * Math.PI * r;
+  // full ring like Mews task indicator
+  const dash = c * 0.92;
+  const color = "#F59E0B";
+  return (
+    <div className="flex items-center gap-4">
+      <div className="relative h-[84px] w-[84px] shrink-0">
+        <svg width={size} height={size}>
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={r}
+            stroke="#F1F1F1"
+            strokeWidth={stroke}
+            fill="none"
+          />
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={r}
+            stroke={color}
+            strokeWidth={stroke}
+            fill="none"
+            strokeLinecap="round"
+            strokeDasharray={`${dash} ${c - dash}`}
+            transform={`rotate(-90 ${size / 2} ${size / 2})`}
+          />
+        </svg>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-xl font-semibold tabular-nums text-zinc-900">
+            {props.count}
+          </div>
+        </div>
+      </div>
+
+      <div className="min-w-0">
+        <div className="text-[13px] font-medium text-zinc-900">
+          {props.label}
+        </div>
+        <div className="mt-1 text-[11px] text-zinc-500">
+          Cần xử lý trong ca
         </div>
       </div>
     </div>
@@ -185,6 +232,14 @@ export function NavDrawer(props: { open: boolean; onClose: () => void }) {
         <SidebarContent />
       </div>
     </div>
+  );
+}
+
+export function LeftRail() {
+  return (
+    <aside className="hidden w-[280px] shrink-0 border-r border-[#F1F1F1] bg-white lg:block">
+      <SidebarContent />
+    </aside>
   );
 }
 
@@ -272,6 +327,36 @@ export function HeaderLinksInline(props: {
           <span className="text-xs text-zinc-400">›</span>
         </div>
       ))}
+    </div>
+  );
+}
+
+export function HeaderTabs(props: {
+  tabs: Array<{ id: string; label: string }>;
+  activeId: string;
+  onChange: (id: string) => void;
+}) {
+  return (
+    <div className="flex flex-wrap items-center gap-3 border border-[#F1F1F1] bg-white px-3 py-2">
+      {props.tabs.map((t) => {
+        const active = t.id === props.activeId;
+        return (
+          <button
+            key={t.id}
+            type="button"
+            onClick={() => props.onChange(t.id)}
+            className={[
+              "relative text-[12px] font-medium",
+              active ? "text-zinc-900" : "text-zinc-500 hover:text-zinc-700",
+            ].join(" ")}
+          >
+            {t.label}
+            {active ? (
+              <span className="absolute -bottom-2 left-0 right-0 h-[2px] bg-zinc-900/70" />
+            ) : null}
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -621,39 +706,75 @@ function MultiRing(props: {
 }
 
 export function MiniOccupancyChart() {
-  // Mews-like: bars + subtle line overlay
+  // Mews-like: multi-series bars + subtle line overlay
   const days = ["T3", "T4", "T5", "T6", "T7", "CN", "T2"];
-  const rooms = [62, 58, 75, 68, 82, 78, 60];
-  const beds = [48, 44, 58, 52, 64, 61, 47];
-  const max = Math.max(...rooms, ...beds);
-  const w = 360;
-  const h = 86;
-  const padX = 12;
-  const padY = 10;
+  const series = {
+    room: { label: "Room", values: [62, 58, 75, 68, 82, 78, 60], color: "#111111" },
+    bed: { label: "Bed", values: [48, 44, 58, 52, 64, 61, 47], color: "#3F3F46" },
+    dorm: { label: "Dorm", values: [18, 14, 20, 17, 25, 23, 16], color: "#A1A1AA" },
+    apt: { label: "Apartment", values: [9, 8, 10, 9, 12, 11, 8], color: "#D4D4D8" },
+  } as const;
+
+  const max = Math.max(
+    ...series.room.values,
+    ...series.bed.values,
+    ...series.dorm.values,
+    ...series.apt.values
+  );
+
+  const w = 420;
+  const h = 96;
+  const padX = 14;
+  const padY = 12;
   const step = (w - padX * 2) / (days.length - 1);
   const toY = (v: number) => padY + (1 - v / max) * (h - padY * 2);
-  const line = beds
+  const line = series.bed.values
     .map((v, i) => `${padX + step * i},${toY(v)}`)
     .join(" ");
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <div className="text-xs font-medium text-zinc-500">Công suất</div>
-        <div className="text-xs text-zinc-500">7 ngày</div>
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-between">
+          <div className="text-xs font-medium text-zinc-500">Occupancy</div>
+          <div className="text-xs text-zinc-500">7 ngày</div>
+        </div>
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-zinc-600">
+          <LegendSwatch color={series.room.color} label={series.room.label} />
+          <LegendSwatch color={series.bed.color} label={series.bed.label} />
+          <LegendSwatch color={series.dorm.color} label={series.dorm.label} />
+          <LegendSwatch color={series.apt.color} label={series.apt.label} />
+        </div>
       </div>
       <div className="relative mt-3">
         <div className="grid grid-cols-7 items-end gap-2">
-          {rooms.map((v, i) => (
+          {series.room.values.map((_, i) => (
             <div key={days[i]} className="flex flex-col items-center gap-2">
-              <div className="w-full" style={{ height: 54 }}>
-                <div
-                  className="w-full bg-zinc-900/10"
-                  style={{ height: 54 }}
-                >
-                  <div
-                    className="w-full bg-zinc-900/55"
-                    style={{ height: `${Math.round((v / max) * 54)}px` }}
+              <div className="w-full" style={{ height: 62 }}>
+                <div className="flex h-full w-full items-end gap-1">
+                  <Bar
+                    value={series.room.values[i] ?? 0}
+                    max={max}
+                    color={series.room.color}
+                    height={62}
+                  />
+                  <Bar
+                    value={series.bed.values[i] ?? 0}
+                    max={max}
+                    color={series.bed.color}
+                    height={62}
+                  />
+                  <Bar
+                    value={series.dorm.values[i] ?? 0}
+                    max={max}
+                    color={series.dorm.color}
+                    height={62}
+                  />
+                  <Bar
+                    value={series.apt.values[i] ?? 0}
+                    max={max}
+                    color={series.apt.color}
+                    height={62}
                   />
                 </div>
               </div>
@@ -676,7 +797,7 @@ export function MiniOccupancyChart() {
             strokeLinecap="round"
             strokeLinejoin="round"
           />
-          {beds.map((v, i) => (
+          {series.bed.values.map((v, i) => (
             <circle
               key={i}
               cx={padX + step * i}
@@ -691,23 +812,44 @@ export function MiniOccupancyChart() {
       </div>
 
       <div className="mt-3 grid grid-cols-4 gap-2 text-xs text-zinc-600">
-        <div className="flex items-center justify-between border bg-white px-3 py-2">
+        <div className="flex items-center justify-between border border-[#F1F1F1] bg-white px-3 py-2">
           <span>Đến</span>
           <span className="font-semibold text-zinc-900">21</span>
         </div>
-        <div className="flex items-center justify-between border bg-white px-3 py-2">
+        <div className="flex items-center justify-between border border-[#F1F1F1] bg-white px-3 py-2">
           <span>Đi</span>
           <span className="font-semibold text-zinc-900">14</span>
         </div>
-        <div className="flex items-center justify-between border bg-white px-3 py-2">
+        <div className="flex items-center justify-between border border-[#F1F1F1] bg-white px-3 py-2">
           <span>Ở</span>
           <span className="font-semibold text-zinc-900">15</span>
         </div>
-        <div className="flex items-center justify-between border bg-white px-3 py-2">
+        <div className="flex items-center justify-between border border-[#F1F1F1] bg-white px-3 py-2">
           <span>Khách</span>
           <span className="font-semibold text-zinc-900">62</span>
         </div>
       </div>
+    </div>
+  );
+}
+
+function LegendSwatch(props: { color: string; label: string }) {
+  return (
+    <div className="flex items-center gap-2">
+      <span
+        className="inline-block h-2.5 w-2.5 rounded-sm"
+        style={{ background: props.color }}
+      />
+      <span>{props.label}</span>
+    </div>
+  );
+}
+
+function Bar(props: { value: number; max: number; color: string; height: number }) {
+  const h = Math.max(2, Math.round((props.value / props.max) * props.height));
+  return (
+    <div className="flex-1 bg-zinc-900/5" style={{ height: props.height }}>
+      <div style={{ height: h, background: props.color }} />
     </div>
   );
 }
