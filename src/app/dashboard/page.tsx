@@ -7,8 +7,7 @@ import {
   PercentDonut,
   ReportsList,
   RingStat,
-  MobileNav,
-  Sidebar,
+  NavDrawer,
   SpacesRing,
   SocialWidget,
   TopBar,
@@ -21,13 +20,12 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-white">
       <TopBar onOpenNav={() => setNavOpen(true)} />
-      <MobileNav open={navOpen} onClose={() => setNavOpen(false)} />
-      <div className="mx-auto flex w-full max-w-7xl">
-        <Sidebar />
-        <main className="flex-1">
-          <div className="grid grid-cols-1 border-l border-[#F1F1F1] lg:grid-cols-12">
+      <NavDrawer open={navOpen} onClose={() => setNavOpen(false)} />
+      <div className="mx-auto w-full max-w-7xl">
+        <main className="w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-12">
             {/* Left two columns (like Mews main area) */}
-            <div className="border-r border-[#F1F1F1] lg:col-span-8">
+            <div className="border-b border-[#F1F1F1] lg:col-span-8 lg:border-b-0 lg:border-r lg:border-r-[#F1F1F1]">
               {/* Top row: 3 columns like Mews */}
               <div className="grid grid-cols-1 items-stretch lg:grid-cols-12">
                 <div className="border-b border-[#F1F1F1] lg:col-span-4 lg:border-r lg:border-r-[#F1F1F1]">

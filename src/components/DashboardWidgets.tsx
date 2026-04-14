@@ -160,10 +160,10 @@ export function Sidebar() {
   );
 }
 
-export function MobileNav(props: { open: boolean; onClose: () => void }) {
+export function NavDrawer(props: { open: boolean; onClose: () => void }) {
   if (!props.open) return null;
   return (
-    <div className="fixed inset-0 z-50 lg:hidden">
+    <div className="fixed inset-0 z-50">
       <button
         type="button"
         className="absolute inset-0 bg-black/30"
