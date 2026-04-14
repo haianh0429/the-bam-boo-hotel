@@ -1,4 +1,5 @@
 import { BookingTimelineDemo } from "@/components/BookingTimelineDemo";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -13,6 +14,12 @@ export default function Home() {
               Hover a booking pill to see quick info.
             </p>
           </div>
+          <Link
+            href="/dashboard"
+            className="rounded-full border bg-white px-4 py-2 text-sm font-medium text-zinc-700 shadow-sm hover:bg-zinc-50"
+          >
+            Mở Dashboard (Tiếng Việt)
+          </Link>
         </div>
 
         <BookingTimelineDemo />
