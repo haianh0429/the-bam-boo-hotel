@@ -15,25 +15,35 @@ import {
   TopBar,
   WidgetCard,
 } from "@/components/DashboardWidgets";
+import { NewReservationWizard } from "@/components/NewReservationWizard";
 import { useState } from "react";
 
 export default function DashboardPage() {
   const [navOpen, setNavOpen] = useState(false);
+  const [reservationOpen, setReservationOpen] = useState(false);
   const [occupancyTab, setOccupancyTab] = useState<
     "occupancy" | "availability" | "rate" | "product"
   >("occupancy");
   return (
     <div className="min-h-screen bg-white">
-      <TopBar onOpenNav={() => setNavOpen(true)} />
+      <TopBar
+        onOpenNav={() => setNavOpen(true)}
+        onNewReservation={() => setReservationOpen(true)}
+      />
       <NavDrawer open={navOpen} onClose={() => setNavOpen(false)} />
+      <NewReservationWizard
+        open={reservationOpen}
+        onClose={() => setReservationOpen(false)}
+        hotelName="THE BAMBOO HOTEL"
+      />
       <div className="mx-auto flex w-full max-w-7xl">
         <LeftRail />
         <main className="flex-1">
-          <div className="grid grid-cols-1 border-l border-[#F1F1F1] lg:grid-cols-12">
+          <div className="grid grid-cols-1 border-l border-[#F1F1F1] md:grid-cols-12">
             {/* Top row: Reservations / Orders+Spaces / Customers */}
-            <div className="border-b border-[#F1F1F1] lg:col-span-8 lg:border-r lg:border-r-[#F1F1F1]">
-              <div className="grid grid-cols-1 items-stretch lg:grid-cols-12">
-                <div className="border-b border-[#F1F1F1] lg:col-span-6 lg:border-b-0 lg:border-r lg:border-r-[#F1F1F1]">
+            <div className="border-b border-[#F1F1F1] md:col-span-8 md:border-r md:border-r-[#F1F1F1]">
+              <div className="grid grid-cols-1 items-stretch md:grid-cols-12">
+                <div className="border-b border-[#F1F1F1] md:col-span-6 md:border-b-0 md:border-r md:border-r-[#F1F1F1]">
                   <WidgetCard
                     title="Đặt phòng"
                     headerLinks={
@@ -62,7 +72,7 @@ export default function DashboardPage() {
                   </WidgetCard>
                 </div>
 
-                <div className="lg:col-span-6">
+                <div className="md:col-span-6">
                   <WidgetCard
                     title="Đơn hàng"
                     headerLinks={
@@ -90,7 +100,7 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="border-b border-[#F1F1F1] lg:col-span-4 lg:border-b-0">
+            <div className="border-b border-[#F1F1F1] md:col-span-4 md:border-b-0">
               <WidgetCard
                 title="Khách hàng"
                 headerLinks={
@@ -111,7 +121,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Bottom row: Occupancy / Finance+Reports / Social */}
-            <div className="border-b border-[#F1F1F1] lg:col-span-8 lg:border-b-0 lg:border-r lg:border-r-[#F1F1F1]">
+            <div className="border-b border-[#F1F1F1] md:col-span-8 md:border-b-0 md:border-r md:border-r-[#F1F1F1]">
               <WidgetCard
                 title="Công suất"
                 headerLinks={
@@ -141,7 +151,7 @@ export default function DashboardPage() {
               </WidgetCard>
             </div>
 
-            <div className="border-b border-[#F1F1F1] lg:col-span-4 lg:border-b-0">
+            <div className="border-b border-[#F1F1F1] md:col-span-4 md:border-b-0">
               <WidgetCard title="Tài chính">
                 <div className="grid gap-4">
                   <FinanceList />
@@ -157,7 +167,7 @@ export default function DashboardPage() {
               </WidgetCard>
             </div>
 
-            <div className="lg:col-span-12">
+            <div className="md:col-span-12">
               <SocialWidget />
             </div>
           </div>

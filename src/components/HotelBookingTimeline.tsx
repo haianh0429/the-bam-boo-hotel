@@ -52,9 +52,18 @@ export function HotelBookingTimeline(props: {
 }) {
   const { startDate, days, rooms, bookings, onMoveBooking } = props;
 
-  const colW = 44;
-  const rowH = 44;
-  const leftW = 260;
+  const [compact, setCompact] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 680px)");
+    const apply = () => setCompact(mql.matches);
+    apply();
+    mql.addEventListener("change", apply);
+    return () => mql.removeEventListener("change", apply);
+  }, []);
+
+  const colW = compact ? 38 : 44;
+  const rowH = compact ? 40 : 44;
+  const leftW = calcLeftW(rooms, compact);
   const border = "#F1F1F1";
   const iconStroke = 1.5;
 
@@ -671,4 +680,15 @@ function roomStatusLabel(s: RoomStatus) {
   if (s === "clean") return "Clean";
   if (s === "inspected") return "Inspected";
   return "Dirty";
+}
+
+function calcLeftW(rooms: TimelineRoom[], compact: boolean) {
+  // Heuristic width based on longest room name.
+  const maxLen = rooms.reduce((m, r) => Math.max(m, r.name.length), 5);
+  const pxPerChar = compact ? 8.4 : 9.2;
+  const base = compact ? 84 : 110; // padding + dot + breathing room
+  const raw = Math.round(base + maxLen * pxPerChar);
+  const min = compact ? 132 : 170;
+  const max = compact ? 200 : 240;
+  return clamp(raw, min, max);
 }

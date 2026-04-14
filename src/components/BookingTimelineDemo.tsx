@@ -5,24 +5,25 @@ import {
   TimelineBooking,
   TimelineRoom,
 } from "@/components/HotelBookingTimeline";
+import { categoryNameById, ROOMS } from "@/lib/rooms";
 import { useMemo, useState } from "react";
 
 export function BookingTimelineDemo() {
   const startDate = useMemo(() => toYmd(new Date()), []);
 
-  const rooms: TimelineRoom[] = [
-    { id: "d101", name: "D101", category: "Deluxe", status: "clean" },
-    { id: "d102", name: "D102", category: "Deluxe", status: "inspected" },
-    { id: "d103", name: "D103", category: "Deluxe", status: "clean" },
-    { id: "s201", name: "S201", category: "Standard", status: "clean" },
-    { id: "s202", name: "S202", category: "Standard", status: "dirty" },
-    { id: "s203", name: "S203", category: "Standard", status: "clean" },
-  ];
+  const rooms: TimelineRoom[] = useMemo(() => {
+    return ROOMS.map((r, idx) => ({
+      id: r.id,
+      name: r.name,
+      category: categoryNameById(r.categoryId),
+      status: idx % 4 === 0 ? "dirty" : idx % 3 === 0 ? "inspected" : "clean",
+    }));
+  }, []);
 
   const [bookings, setBookings] = useState<TimelineBooking[]>(() => [
     {
       id: "b1",
-      roomId: "d101",
+      roomId: "deluxe-201",
       guestName: "Nguyen Minh Anh",
       paymentStatus: "paid",
       notes: "Late arrival (after 9pm).",
@@ -32,7 +33,7 @@ export function BookingTimelineDemo() {
     },
     {
       id: "b2",
-      roomId: "d102",
+      roomId: "balcony-202",
       guestName: "Tran Quang Huy",
       paymentStatus: "due",
       notes: "Needs invoice.",
@@ -42,7 +43,7 @@ export function BookingTimelineDemo() {
     },
     {
       id: "b3",
-      roomId: "s201",
+      roomId: "president-301",
       guestName: "Linh Pham",
       paymentStatus: "partial",
       notes: "High floor preferred.",
@@ -52,7 +53,7 @@ export function BookingTimelineDemo() {
     },
     {
       id: "b4",
-      roomId: "s203",
+      roomId: "dummy-2",
       guestName: "David Kim",
       paymentStatus: "paid",
       notes: "",

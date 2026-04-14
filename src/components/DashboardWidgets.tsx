@@ -15,6 +15,7 @@ import {
   ListChecks,
   Mail,
   Menu,
+  Plus,
   NotebookText,
   PackageCheck,
   Receipt,
@@ -29,7 +30,10 @@ import {
 } from "lucide-react";
 import { ReactNode, useMemo } from "react";
 
-export function TopBar(props: { onOpenNav?: () => void }) {
+export function TopBar(props: {
+  onOpenNav?: () => void;
+  onNewReservation?: () => void;
+}) {
   return (
     <div className="sticky top-0 z-30 bg-[#111111] text-white">
       <div className="mx-auto flex h-12 w-full max-w-7xl items-center gap-4 px-4">
@@ -66,15 +70,26 @@ export function TopBar(props: { onOpenNav?: () => void }) {
           })}
         </div>
 
-        <div className="ml-2 hidden items-center gap-2 md:flex">
+        <div className="ml-2 flex items-center gap-2">
+          <button
+            type="button"
+            onClick={props.onNewReservation}
+            className="rounded-md bg-white/10 p-2 text-white/90 hover:bg-white/15"
+            aria-label="Tạo đặt phòng mới"
+            title="Tạo đặt phòng mới"
+          >
+            <Plus className="h-4 w-4" strokeWidth={1.5} />
+          </button>
           <TopIcon icon={<Bell className="h-4 w-4" strokeWidth={1.5} />} />
-          <TopIcon icon={<Mail className="h-4 w-4" strokeWidth={1.5} />} />
-          <TopIcon icon={<LifeBuoy className="h-4 w-4" strokeWidth={1.5} />} />
-          <TopIcon icon={<Settings className="h-4 w-4" strokeWidth={1.5} />} />
-          <div className="mx-1 h-5 w-px bg-white/15" />
-          <div className="flex items-center gap-2 rounded-md bg-white/10 px-2 py-1 text-xs text-white/80">
-            <span className="h-2 w-2 rounded-full bg-emerald-400" />
-            <span className="max-w-32 truncate">Lễ tân</span>
+          <div className="hidden items-center gap-2 md:flex">
+            <TopIcon icon={<Mail className="h-4 w-4" strokeWidth={1.5} />} />
+            <TopIcon icon={<LifeBuoy className="h-4 w-4" strokeWidth={1.5} />} />
+            <TopIcon icon={<Settings className="h-4 w-4" strokeWidth={1.5} />} />
+            <div className="mx-1 h-5 w-px bg-white/15" />
+            <div className="flex items-center gap-2 rounded-md bg-white/10 px-2 py-1 text-xs text-white/80">
+              <span className="h-2 w-2 rounded-full bg-emerald-400" />
+              <span className="max-w-32 truncate">Lễ tân</span>
+            </div>
           </div>
         </div>
       </div>
